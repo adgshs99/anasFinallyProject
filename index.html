@@ -1,32 +1,426 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css"
-        integrity="sha384-nU14brUcp6StFntEOOEBvcJm4huWjB0OcIeQ3fltAfSmuZFrkAif0T+UtNGlKKQv" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css"
+      integrity="sha384-nU14brUcp6StFntEOOEBvcJm4huWjB0OcIeQ3fltAfSmuZFrkAif0T+UtNGlKKQv"
+      crossorigin="anonymous"
+    />
     <link rel="stylesheet" href="css/style.css" />
-    <link rel="icon"
-        href="https://e7.pngegg.com/pngimages/61/259/png-clipart-laborer-computer-icons-oil-employees-s-miscellaneous-oil-vector-thumbnail.png"
-        type="image/x-icon" />
     <title>נוכחות עובדים</title>
-</head>
+  </head>
 
-<body onload="onInit()">
+  <body onload="onInit()">
     <div class="container">
-        <h1 class="text-center fw-bold">נוכחות עובדים</h1>
+      <p class="text-center fs-4 fw-bold">נוכחות עובדים</p>
+      <div class="row">
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a
+              class="nav-link active"
+              onclick="displayDiv(this, 'divEmployees')"
+              >ניהול עובדים</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" onclick="displayDiv(this, 'divPresence')"
+              >דיווח נוכחות</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" onclick="displayDiv(this, 'divReports')"
+              >דוחות וסיכומים</a
+            >
+          </li>
+        </ul>
+      </div>
+      <!-- ניהול עובדים -->
+      <div class="row" id="divEmployees">
+        <div class="row">
+          <div class="form-floating mb-3 col-10">
+            
+          </div>
+          <div class="col-2">
+            <button
+              class="btn btn-success col-12"
+              data-bs-toggle="modal"
+              data-bs-target="#exampleModal"
+            >
+              הוספת עובד
+            </button>
+          </div>
+        </div>
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th scope="col">שם פרטי</th>
+              <th scope="col">שם משפחה</th>
+              <th scope="col">תעודת זהות</th>
+              <th scope="col">כתובת</th>
+              <th scope="col">טלפון</th>
+              <th scope="col">מייל</th>
+              <th scope="col">תפקיד</th>
+              <th scope="col">שכר שעתי</th>
+              <th scope="col">פעולות</th>
+            </tr>
+          </thead>
+          <tbody id="myTbody">
+            <tr>
+              <td>אבי</td>
+              <td>כהן</td>
+              <td>123456789</td>
+              <td>רחוב 1</td>
+              <td>0501234567</td>
+              <td>ggg@ggg.com</td>
+              <td>מנהל</td>
+              <td>70</td>
+              <td>
+                <button class="btn btn-primary">ערוך</button>
+                <button class="btn btn-danger">מחק</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- סוף ניהול עובדים -->
+
+      <!-- דיווח נוכחות -->
+      <div class="row" id="divPresence" style="display: none">
+        <p class="text-center fs-3 fw-bold text-primary">
+          יש לבחור את העובד ואז ללחוץ על כפתור הכניסה / היציאה
+        </p>
+        <div class="form-floating mb-3 col-10">
+          <select
+            class="form-select"
+            id="selectEmployee"
+            aria-label="Floating label select example"
+            onchange="setCurrentEmployeeIdToAtt()"
+          >
+            <!-- <option selected>בחר עובד</option>
+            <option id="employee" value="מזכירה">מזכירה</option> -->
+          </select>
+          <label for="floatingSelect">בחר עובד</label>
+        </div>
+        <p class="text-center fs-3 fw-bold">
+          תאריך היום: <span id="todayDate"></span>
+        </p>
+        <p class="text-center fs-3 fw-bold">
+          השעה עכשיו: <span id="timeNow"></span>
+        </p>
+        <div class="row">
+          <div class="col-6">
+            <button class="btn btn-success col-12" onclick="addPresence()">
+              כניסה
+            </button>
+          </div>
+          <div class="col-6">
+            <button class="btn btn-danger col-12" onclick="endPresence()">
+              יציאה
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- סוף דיווח נוכחות -->
+
+      <!-- דוחות וסיכומים -->
+      <div class="row" id="divReports" style="display: none">
+        <div class="row">
+          <div class="form-floating mb-3 col-12">
+            <select
+              class="form-select"
+              id="selectEmployeeReport"
+              aria-label="Floating label select example"
+              onchange="setFilterToReport()"
+            >
+              <!-- <option selected>בחר עובד</option>
+              <option id="employee" value="מזכירה">מזכירה</option> -->
+            </select>
+            <label for="floatingSelect">בחר עובד</label>
+          </div>
+        </div>
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th scope="col">שם העובד</th>
+              <th scope="col">תאריך</th>
+              <th scope="col">שעת כניסה</th>
+              <th scope="col">שעת יציאה</th>
+              <th scope="col">סה"כ שעות</th>
+            </tr>
+          </thead>
+          <tbody id="myPresenceTbody">
+            <tr>
+              <td>פארס מולא</td>
+              <td>15/09/2023</td>
+              <td>09:00</td>
+              <td>14:00</td>
+              <td>5</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- סוף דוחות וסיכומים -->
+
+      <!-- Modal add -->
+      <div
+        class="modal fade"
+        id="exampleModal"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">
+                הוספת עובד חדש
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="form-floating mb-3 col-10">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="firstName"
+                  placeholder="שם פרטי"
+                />
+                <label for="floatingInput">שם פרטי</label>
+              </div>
+              <div class="form-floating mb-3 col-10">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="lastName"
+                  placeholder="שם משפחה"
+                />
+                <label for="floatingInput">שם משפחה</label>
+              </div>
+              <div class="form-floating mb-3 col-10">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="id"
+                  placeholder="תעודת זהות"
+                />
+                <label for="floatingInput">תעודת זהות</label>
+              </div>
+              <div class="form-floating mb-3 col-10">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="address"
+                  placeholder="כתובת"
+                />
+                <label for="floatingInput">כתובת</label>
+              </div>
+              <div class="form-floating mb-3 col-10">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="phone"
+                  placeholder="טלפון"
+                />
+                <label for="floatingInput">טלפון</label>
+              </div>
+              <div class="form-floating mb-3 col-10">
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  placeholder="מייל"
+                />
+                <label for="floatingInput">מייל</label>
+              </div>
+              <div class="form-floating mb-3 col-10">
+                <select
+                  class="form-select"
+                  id="role"
+                  aria-label="Floating label select example"
+                >
+                  <option selected>בחר תפקיד</option>
+                  <option value="מזכירה">מזכירה</option>
+                  <option value="עובד">עובד</option>
+                  <option value="אנליסט">אנליסט</option>
+                </select>
+                <label for="floatingSelect">תפקיד</label>
+              </div>
+              <div class="form-floating mb-3 col-10">
+                <input
+                  type="number"
+                  class="form-control"
+                  id="hourlyWage"
+                  placeholder="שכר שעתי"
+                />
+                <label for="floatingInput">שכר שעתי</label>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                יציאה ללא שמירה
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                onclick="addEmployee()"
+              >
+                הוספה
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal edit -->
+      <div
+        class="modal fade"
+        id="editModal"
+        tabindex="-1"
+        aria-labelledby="editModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">
+                עריכת עובד קיים
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="form-floating mb-3 col-10">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="firstNameE"
+                  placeholder="שם פרטי"
+                />
+                <label for="floatingInput">שם פרטי</label>
+              </div>
+              <div class="form-floating mb-3 col-10">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="lastNameE"
+                  placeholder="שם משפחה"
+                />
+                <label for="floatingInput">שם משפחה</label>
+              </div>
+              <div class="form-floating mb-3 col-10">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="idE"
+                  placeholder="תעודת זהות"
+                />
+                <label for="floatingInput">תעודת זהות</label>
+              </div>
+              <div class="form-floating mb-3 col-10">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="addressE"
+                  placeholder="כתובת"
+                />
+                <label for="floatingInput">כתובת</label>
+              </div>
+              <div class="form-floating mb-3 col-10">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="phoneE"
+                  placeholder="טלפון"
+                />
+                <label for="floatingInput">טלפון</label>
+              </div>
+              <div class="form-floating mb-3 col-10">
+                <input
+                  type="email"
+                  class="form-control"
+                  id="emailE"
+                  placeholder="מייל"
+                />
+                <label for="floatingInput">מייל</label>
+              </div>
+              <div class="form-floating mb-3 col-10">
+                <select
+                  class="form-select"
+                  id="roleE"
+                  aria-label="Floating label select example"
+                >
+                  <option selected>בחר תפקיד</option>
+                  <option value="מזכירה">מזכירה</option>
+                  <option value="עובד">עובד</option>
+                  <option value="מנהל">מנהל</option>
+                  <option value="מנהל צוות">מנהל צוות</option>
+                  <option value="מנהל מכירות">מנהל מכירות</option>
+                  <option value="אנליסט">אנליסט</option>
+                </select>
+                <label for="floatingSelect">תפקיד</label>
+              </div>
+              <div class="form-floating mb-3 col-10">
+                <input
+                  type="number"
+                  class="form-control"
+                  id="hourlyWageE"
+                  placeholder="שכר שעתי"
+                />
+                <label for="floatingInput">שכר שעתי</label>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                יציאה ללא שמירה
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                onclick="editEmployee()"
+              >
+                שמור שינויים
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- end modal -->
     </div>
-
-    <!-- scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
     <script src="js/index.js"></script>
-</body>
-
+  </body>
 </html>
